@@ -1,0 +1,16 @@
+body{
+    font-size: 18px;
+    width: 150px;
+    height: 50px
+}
+
+#linkNav ul li.Mrphs-sitesNav__menuitem {
+    margin: 0 0.5em 0.5em 0;
+    padding: 0;
+    position: relative;
+    border-top: 1px solid #E5E5E5;
+    border-right: 1px solid #E5E5E5;
+    border-bottom: 1px solid #E5E5E5;
+    border-left: 1px solid #E5E5E5;
+    background: #fff;
+}

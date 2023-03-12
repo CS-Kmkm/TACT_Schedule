@@ -1,0 +1,115 @@
+let day_of_week = ["月", "火", "水", "木", "金"];
+let excepts = ["ホーム", "（学部）学生支援センター_2b", "【教養教育院】情報学部向け"];
+let color = ["#c6c6ff", "#ff9999", "#adffff", "#99ffcc", "#ffc993"];
+let background = document.querySelectorAll(".Mrphs-sitesNav__menuitem");
+let container = document.querySelectorAll(".link-container");
+let target = document.getElementById("topnav");
+let class_list = []
+
+function zenkaku_conversion(str){
+  return Number(str.replace(/[０-９]/g, function(s) {
+    return String.fromCharCode(s.charCodeAt(0) - 65248);
+  }));
+}
+
+function day_of_week_conversion(str){
+  switch(str){
+    case "月":
+      return 0;
+    case "火":
+      return 1;
+    case "水":
+      return 2;
+    case "木":
+      return 3;
+    case "金":
+      return 4;
+
+  }
+}
+
+//年度, 学期の判定準備
+let date = new Date();
+let year = date.getFullYear();
+let month = date.getMonth();
+month += 1;//getMonthは0スタートだから補正する。
+let term = "";
+if (month > 0 && month <= 3){
+    year -= 1;//年度表示に合わせる
+}
+if (month >= 4 && month < 10){
+    term = "春";
+}else{
+    term = "秋";
+}
+
+for(let i = 0; i < container.length; i++){
+    let back = background[i+2];
+    let con = container[i];
+    let title = con.title;
+
+    let str_reg =  year.toString() + "年度" + term  + "[１\/]";
+
+    //let str_reg =  year.toString() + "年度" + term  + "１?" + "期\/";
+
+    let reg = new RegExp(str_reg);
+    if (reg.test(title) == true){
+      let day_class = day_of_week_conversion(title.substr(-4, 1));
+      let period_class = zenkaku_conversion(title.substr(-3, 1));
+      let class_order = day_class + (period_class - 1) * 5;
+      back.style.backgroundColor = color[day_class];
+      //con.style.backgroundColor = color[day_class];
+      
+      if (day_of_week_conversion(title.substr(-4, 1)) == day_of_week_conversion(title.substr(-8, 1))){
+        period_class = zenkaku_conversion(title.substr(-7, 1));
+        class_order = day_class + (period_class - 1) * 5;
+        back.style.order = class_order;
+        let clone_class = back.cloneNode(true);
+        //clone_class.order = class_order;
+        class_list.push(class_order);
+        target.appendChild(clone_class);
+      }
+
+      period_class = zenkaku_conversion(title.substr(-3, 1));
+      class_order = day_class + (period_class - 1) * 5;
+      class_list.push(class_order);
+      back.style.order = class_order;
+      //alert(title + class_order);
+      continue;
+    }else{
+      back.style.display = "none";
+    }
+}
+
+for(let i=0; i<25; i++){
+  if (!(class_list.includes(i))){
+    let empty_class = document.createElement("li");
+    empty_class.className = "Mrphs-sitesNav__menuitem";
+    target.appendChild(empty_class);
+
+    //fav_btn
+    let empty_class_favbtn = '<a class="Mrphs-sitesNav__favbtn fav" href="#" role="switch" aria-checked="true" ></a>'
+    empty_class.insertAdjacentHTML("afterbegin", empty_class_favbtn);
+
+
+    let class_title = "空きコマ(" +year.toString() + "年度" + term + "期/" + day_of_week[i%5] + (Math.floor(i/5) +1).toString() +"限)";
+    
+    let empty_class_link_container = 
+                        '<a class="link-container" href="https://tact.ac.thers.ac.jp:443/portal/site/%7Efda32263-2051-4759-9f78-0101941033eb" title="' + class_title + '">\
+                            <span class="Mrphs-sitesNav__menuitem--myworkspace-label">' + class_title + '</span>\
+                        </a>'
+    empty_class.insertAdjacentHTML("beforeend", empty_class_link_container);
+
+    let empty_class_dropdown = '<a class="Mrphs-sitesNav__dropdown" href="#" data-site-id="~fda32263-2051-4759-9f78-0101941033eb" aria-haspopup="true" aria-label="open attached menu"></a>'
+    empty_class.insertAdjacentHTML("beforeend", empty_class_dropdown);
+    
+    empty_class.style.order = i;
+    //empty_class.style.backgroundColor = color[i%5];
+  }
+}
+
+let selected = document.querySelectorAll(".is-selected");
+for (let i=0;  i < selected.length; i++){
+  selected[i].style.backgroundColor = "#006E4F";
+}
+
