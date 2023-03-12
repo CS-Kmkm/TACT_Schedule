@@ -50,13 +50,10 @@ chrome.storage.sync.get('selectedOption', function(data) {
   if (selectedOption == 2) {
     str_reg = year.toString() + "年度" + term + "[２\/]";
   }
-  //ここから
   for(let i = 0; i < container.length; i++){
     let back = background[i+2];
     let con = container[i];
     let title = con.title;    
-
-    //let str_reg =  year.toString() + "年度" + term  + "１?" + "期\/";
 
     let reg = new RegExp(str_reg);
     if (reg.test(title) == true){
@@ -118,5 +115,4 @@ chrome.storage.sync.get('selectedOption', function(data) {
   for (let i=0;  i < selected.length; i++){
     selected[i].style.backgroundColor = "#006E4F";
   }
-  //ここまで
 });
