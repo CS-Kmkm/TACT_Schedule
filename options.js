@@ -1,10 +1,13 @@
-const form = document.querySelector('#options-form');
+// Save button
+let saveButton = document.getElementById("save-button");
 
-form.addEventListener('submit', event => {
-  event.preventDefault();
-  
-  const season = document.querySelector('input[name="season"]:checked').value;
-  chrome.storage.sync.set({ favoriteSeason: season }, () => {
-    console.log('Favorite season is set to ' + season);
+// Save option
+saveButton.addEventListener('click', function() {
+  // Option select
+  let optionSelect = document.querySelector('input[name="option"]:checked');
+
+  let selectedOption = optionSelect.value;
+  chrome.storage.sync.set({selectedOption: selectedOption}, function() {
+    console.log('Value is set to ' + selectedOption);
   });
 });

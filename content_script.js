@@ -43,12 +43,18 @@ if (month >= 4 && month < 10){
     term = "秋";
 }
 
-for(let i = 0; i < container.length; i++){
+
+let str_reg = year.toString() + "年度" + term + "[１\/]";
+chrome.storage.sync.get('selectedOption', function(data) {
+  let selectedOption = data.selectedOption || '1';
+  if (selectedOption == 2) {
+    str_reg = year.toString() + "年度" + term + "[２\/]";
+  }
+  //ここから
+  for(let i = 0; i < container.length; i++){
     let back = background[i+2];
     let con = container[i];
-    let title = con.title;
-
-    let str_reg =  year.toString() + "年度" + term  + "[１\/]";
+    let title = con.title;    
 
     //let str_reg =  year.toString() + "年度" + term  + "１?" + "期\/";
 
@@ -79,37 +85,38 @@ for(let i = 0; i < container.length; i++){
     }else{
       back.style.display = "none";
     }
-}
-
-for(let i=0; i<25; i++){
-  if (!(class_list.includes(i))){
-    let empty_class = document.createElement("li");
-    empty_class.className = "Mrphs-sitesNav__menuitem";
-    target.appendChild(empty_class);
-
-    //fav_btn
-    let empty_class_favbtn = '<a class="Mrphs-sitesNav__favbtn fav" href="#" role="switch" aria-checked="true" ></a>'
-    empty_class.insertAdjacentHTML("afterbegin", empty_class_favbtn);
-
-
-    let class_title = "空きコマ(" +year.toString() + "年度" + term + "期/" + day_of_week[i%5] + (Math.floor(i/5) +1).toString() +"限)";
-    
-    let empty_class_link_container = 
-                        '<a class="link-container" href="https://tact.ac.thers.ac.jp:443/portal/site/%7Efda32263-2051-4759-9f78-0101941033eb" title="' + class_title + '">\
-                            <span class="Mrphs-sitesNav__menuitem--myworkspace-label">' + class_title + '</span>\
-                        </a>'
-    empty_class.insertAdjacentHTML("beforeend", empty_class_link_container);
-
-    let empty_class_dropdown = '<a class="Mrphs-sitesNav__dropdown" href="#" data-site-id="~fda32263-2051-4759-9f78-0101941033eb" aria-haspopup="true" aria-label="open attached menu"></a>'
-    empty_class.insertAdjacentHTML("beforeend", empty_class_dropdown);
-    
-    empty_class.style.order = i;
-    //empty_class.style.backgroundColor = color[i%5];
   }
-}
 
-let selected = document.querySelectorAll(".is-selected");
-for (let i=0;  i < selected.length; i++){
-  selected[i].style.backgroundColor = "#006E4F";
-}
-
+  for(let i=0; i<25; i++){
+    if (!(class_list.includes(i))){
+      let empty_class = document.createElement("li");
+      empty_class.className = "Mrphs-sitesNav__menuitem";
+      target.appendChild(empty_class);
+  
+      //fav_btn
+      let empty_class_favbtn = '<a class="Mrphs-sitesNav__favbtn fav" href="#" role="switch" aria-checked="true" ></a>'
+      empty_class.insertAdjacentHTML("afterbegin", empty_class_favbtn);
+  
+  
+      let class_title = "空きコマ(" +year.toString() + "年度" + term + "期/" + day_of_week[i%5] + (Math.floor(i/5) +1).toString() +"限)";
+      
+      let empty_class_link_container = 
+                          '<a class="link-container" href="https://tact.ac.thers.ac.jp:443/portal/site/%7Efda32263-2051-4759-9f78-0101941033eb" title="' + class_title + '">\
+                              <span class="Mrphs-sitesNav__menuitem--myworkspace-label">' + class_title + '</span>\
+                          </a>'
+      empty_class.insertAdjacentHTML("beforeend", empty_class_link_container);
+  
+      let empty_class_dropdown = '<a class="Mrphs-sitesNav__dropdown" href="#" data-site-id="~fda32263-2051-4759-9f78-0101941033eb" aria-haspopup="true" aria-label="open attached menu"></a>'
+      empty_class.insertAdjacentHTML("beforeend", empty_class_dropdown);
+      
+      empty_class.style.order = i;
+      //empty_class.style.backgroundColor = color[i%5];
+    }
+  }
+  
+  let selected = document.querySelectorAll(".is-selected");
+  for (let i=0;  i < selected.length; i++){
+    selected[i].style.backgroundColor = "#006E4F";
+  }
+  //ここまで
+});
