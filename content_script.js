@@ -1,5 +1,5 @@
 let day_of_week = ["月", "火", "水", "木", "金"];
-let excepts = ["ホーム", "（学部）学生支援センター_2b", "【教養教育院】情報学部向け"];
+let projects = 0;
 let color = ["#c6c6ff", "#ff9999", "#adffff", "#99ffcc", "#ffc993"];
 let background = document.querySelectorAll(".Mrphs-sitesNav__menuitem");
 let container = document.querySelectorAll(".link-container");
@@ -43,11 +43,10 @@ if (month >= 4 && month < 10){
     term = "秋";
 }
 
-
 let str_reg = year.toString() + "年度" + term + "[１\/]";
-chrome.storage.sync.get('selectedOption', function(data) {
-  let selectedOption = data.selectedOption || '1';
-  if (selectedOption == 2) {
+chrome.storage.sync.get('selectedTerm', function(data) {
+  let selectedTerm = data.selectedTerm || '1';
+  if (selectedTerm == 2) {
     str_reg = year.toString() + "年度" + term + "[２\/]";
   }
   for(let i = 0; i < container.length; i++){
@@ -61,14 +60,22 @@ chrome.storage.sync.get('selectedOption', function(data) {
       let period_class = zenkaku_conversion(title.substr(-3, 1));
       let class_order = day_class + (period_class - 1) * 5;
       back.style.backgroundColor = color[day_class];
-      //con.style.backgroundColor = color[day_class];
       
       if (day_of_week_conversion(title.substr(-4, 1)) == day_of_week_conversion(title.substr(-8, 1))){
         period_class = zenkaku_conversion(title.substr(-7, 1));
         class_order = day_class + (period_class - 1) * 5;
-        back.style.order = class_order;
+        back.style.order = class_order + 5;
         let clone_class = back.cloneNode(true);
         //clone_class.order = class_order;
+        class_list.push(class_order);
+        target.appendChild(clone_class);
+      }
+
+      if (day_of_week_conversion(title.substr(-4, 1)) == day_of_week_conversion(title.substr(-12, 1))){
+        period_class = zenkaku_conversion(title.substr(-11, 1));
+        class_order = day_class + (period_class - 1) * 5;
+        back.style.order = class_order + 5;
+        let clone_class = back.cloneNode(true);
         class_list.push(class_order);
         target.appendChild(clone_class);
       }
@@ -76,12 +83,34 @@ chrome.storage.sync.get('selectedOption', function(data) {
       period_class = zenkaku_conversion(title.substr(-3, 1));
       class_order = day_class + (period_class - 1) * 5;
       class_list.push(class_order);
-      back.style.order = class_order;
+      back.style.order = class_order + 5;
       //alert(title + class_order);
       continue;
     }else{
-      back.style.display = "none";
+      if (title.substr(-2, 1) == "限"){
+        back.style.display = "none";
+      }else{
+        back.style.order = 0;
+        projects += 1;
+        //back.style.backgroundColor = "#5f9ea0";
+      }
     }
+  }
+
+  for (let i=0; i < (5 - projects + 1); i++){
+    let empty_class = document.createElement("li");
+    empty_class.className = "Mrphs-sitesNav__menuitem";
+    target.appendChild(empty_class);
+
+    let class_title = "  ";
+    
+    let empty_class_link_container = 
+                        '<a class="link-container" href="https://tact.ac.thers.ac.jp:443/portal/site/%7Efda32263-2051-4759-9f78-0101941033eb" title="' + class_title + '">\
+                            <span class="Mrphs-sitesNav__menuitem--myworkspace-label">' + class_title + '</span>\
+                        </a>'
+    empty_class.insertAdjacentHTML("beforeend", empty_class_link_container);
+    
+    empty_class.style.order = 4;
   }
 
   for(let i=0; i<25; i++){
@@ -106,7 +135,7 @@ chrome.storage.sync.get('selectedOption', function(data) {
       let empty_class_dropdown = '<a class="Mrphs-sitesNav__dropdown" href="#" data-site-id="~fda32263-2051-4759-9f78-0101941033eb" aria-haspopup="true" aria-label="open attached menu"></a>'
       empty_class.insertAdjacentHTML("beforeend", empty_class_dropdown);
       
-      empty_class.style.order = i;
+      empty_class.style.order = i + 5;
       //empty_class.style.backgroundColor = color[i%5];
     }
   }
