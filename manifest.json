@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "TACT Schedule",
-    "version": "1.0.0",
+    "version": "2.0.1",
     "description": "This extension change display based on day of week.",
     "icons": {
         "16": "image/icon16.png",
@@ -22,7 +22,7 @@
         {
             "matches": ["https://tact.ac.thers.ac.jp/portal/*"],
             "css": ["style.css"],
-            "js": ["content_script.js"]
+            "js": ["content_script_2.js"]
         }
     ]
 

@@ -12,12 +12,30 @@ function zenkaku_conversion(str){
   }));
 }
 
-function day_of_week_conversion(str){
-  return day_of_week.indexOf(str);
+function test_back(back){
+  back.style.backgroundColor = "#006E4F";
 }
 
+function gen_reg(date){
+  let year = date.getFullYear();
+  let month = date.getMonth();
+  let term = "";
+  
+  if (month >= 0 && month <= 2) {
+      year -= 1; // 年度表示に合わせる
+  }
+  
+  if (month >= 3 && month < 9) {
+      term = "春";
+  } else {
+      term = "秋";
+  }
+  const str_reg = year.toString() + "年度" + term + "[１\/]";
+  return str_reg;
+}
 //年度, 学期の判定準備
-let date = new Date();
+function main(){
+  let date = new Date();
 let year = date.getFullYear();
 let month = date.getMonth();
 month += 1;//getMonthは0スタートだから補正する。
@@ -31,7 +49,7 @@ if (month >= 4 && month < 10){
     term = "秋";
 }
 
-let str_reg = year.toString() + "年度" + term + "[１\/]";
+let str_reg = 
 chrome.storage.sync.get('selectedTerm', function(data) {
   let selectedTerm = data.selectedTerm || '1';
   if (selectedTerm == 2) {
@@ -44,12 +62,12 @@ chrome.storage.sync.get('selectedTerm', function(data) {
 
     let reg = new RegExp(str_reg);
     if (reg.test(title) == true){
-      let day_class = day_of_week_conversion(title.substr(-4, 1));
+      let day_class = day_of_week.indexOf(title.substr(-4, 1));
       let period_class = zenkaku_conversion(title.substr(-3, 1));
       let class_order = day_class + (period_class - 1) * 5;
       back.style.backgroundColor = color[day_class];
       
-      if (day_of_week_conversion(title.substr(-4, 1)) == day_of_week_conversion(title.substr(-8, 1))){
+      if (day_of_week.indexOf(title.substr(-4, 1)) == day_of_week.indexOf(title.substr(-8, 1))){
         period_class = zenkaku_conversion(title.substr(-7, 1));
         class_order = day_class + (period_class - 1) * 5;
         back.style.order = class_order + 5;
@@ -58,7 +76,7 @@ chrome.storage.sync.get('selectedTerm', function(data) {
         target.appendChild(clone_class);
       }
 
-      if (day_of_week_conversion(title.substr(-4, 1)) == day_of_week_conversion(title.substr(-12, 1))){
+      if (day_of_week.indexOf(title.substr(-4, 1)) == day_of_week.indexOf(title.substr(-12, 1))){
         period_class = zenkaku_conversion(title.substr(-11, 1));
         class_order = day_class + (period_class - 1) * 5;
         back.style.order = class_order + 5;
@@ -129,6 +147,9 @@ chrome.storage.sync.get('selectedTerm', function(data) {
   
   let selected = document.querySelectorAll(".is-selected");
   for (let i=0;  i < selected.length; i++){
-    selected[i].style.backgroundColor = "#006E4F";
+    test_back(selected[i]);
   }
 });
+}
+main ();
+

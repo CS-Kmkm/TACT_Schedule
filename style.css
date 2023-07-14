@@ -1,0 +1,9 @@
+#topnav{
+    display: flex !important;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+}
+
+.Mrphs-sitesNav__menuitem--myworkspace{
+    display: none !important;
+}
