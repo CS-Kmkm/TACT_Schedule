@@ -22,7 +22,7 @@
         {
             "matches": ["https://tact.ac.thers.ac.jp/portal/*"],
             "css": ["style.css"],
-            "js": ["content_script_2.js"]
+            "js": ["content_script.js"]
         }
     ]
 
