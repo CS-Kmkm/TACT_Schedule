@@ -6,9 +6,9 @@ const container = document.querySelectorAll(".link-container");
 const target = document.getElementById("topnav");
 
 const date = new Date();
-const year = date.getFullYear();
+let year = date.getFullYear();
 const month = date.getMonth();
-let term = "";
+let term, season, quarter;
 
 let projects = 0;
 let class_list = [];
@@ -54,61 +54,89 @@ function generate_empty_class(title, order){
     }
 }
 
-  //年度, 学期の判定準備
+function getData() {
+    return new Promise(function(resolve, reject) {
+        chrome.storage.sync.get(['year', 'term'], function(data) {
+            if (chrome.runtime.lastError) {
+                reject(chrome.runtime.lastError);
+            } else {
+            resolve(data);
+            }  
+        });
+    });
+}
+
+//年度, 学期の判定準備
 function gen_reg(){
-    if (month >= 0 && month <= 2) {
-        year -= 1; // 年度表示に合わせる
+    if (term <=2){
+        season = "春";
+    }else{
+        season = "秋";
+    }
+    switch(term % 2){
+        case 0:
+            quarter = "２";
+            break;
+        case 1:
+            quarter = "１"
     }
     
-    if (month >= 3 && month < 9) {
-        term = "春";
-    } else {
-        term = "秋";
-    }
-    const str_reg = year.toString() + "年度" + term + "[１\/]";
+    let str_reg = year.toString() + "年度" + season + "[" + quarter +"\/]";
     return str_reg;
 }
 
-let str_reg = gen_reg();
+function main(){
+    let str_reg = gen_reg();
 
-for(let i = 0; i < container.length; i++){
-    let back = background[i+2];
-    let con = container[i];
-    let title = con.title;
-    let per_num = -3;
-
-    let reg = new RegExp(str_reg);
-    if (reg.test(title) == true){
-        class_setting(back, con, per_num);
-        per_num -= 4;
-        while (day_of_week.indexOf(title.substr(-4, 1)) == day_of_week.indexOf(title.substr((per_num - 1), 1))){
-            clone_class(back, con, per_num);
+    for(let i = 0; i < container.length; i++){
+        let back = background[i+2];
+        let con = container[i];
+        let title = con.title;
+        let per_num = -3;
+    
+        let reg = new RegExp(str_reg);
+        if (reg.test(title) == true){
+            class_setting(back, con, per_num);
             per_num -= 4;
-        }
-        class_setting(back, con, -3);
-        continue;
-    }else{
-        if (title.substr(-2, 1) == "限"){
-            back.style.display = "none";
+            while (day_of_week.indexOf(title.substr(-4, 1)) == day_of_week.indexOf(title.substr((per_num - 1), 1))){
+                clone_class(back, con, per_num);
+                per_num -= 4;
+            }
+            class_setting(back, con, -3);
+            continue;
         }else{
-            back.style.order = 0;
-            projects += 1;
+            if (title.substr(-2, 1) == "限"){
+                back.style.display = "none";
+            }else{
+                back.style.order = 0;
+                projects += 1;
+            }
         }
     }
-}
-
-for (let i=0; i < (5 - projects + 1); i++){
-    generate_empty_class("", 0);
-}
-
-for(let i=0; i<25; i++){
-    if (!(class_list.includes(i))){
-        let title = "空きコマ(" +year.toString() + "年度" + term + "期/" + day_of_week[i%5] + (Math.floor(i/5) +1).toString() +"限)";
-        generate_empty_class(title, i);
+    
+    for (let i=0; i < (5 - projects + 1); i++){
+        generate_empty_class("", 0);
+    }
+    
+    for(let i=0; i<25; i++){
+        if (!(class_list.includes(i))){
+            let title = "空きコマ(" +year.toString() + "年度" + season + quarter + "期/" + day_of_week[i%5] + (Math.floor(i/5) +1).toString() +"限)";
+            generate_empty_class(title, i);
+        }
+    }
+    
+    let selected = document.querySelectorAll(".is-selected");
+    for (let i=0;  i < selected.length; i++){
+        selected[i].style.backgroundColor = "#006E4F";
     }
 }
 
-let selected = document.querySelectorAll(".is-selected");
-for (let i=0;  i < selected.length; i++){
-    selected[i].style.backgroundColor = "#006E4F";
-}
+getData()
+    .then(function(data) {
+        year = data.year || (new Date().getFullYear());
+        term = data.term || 2;
+        main();
+    })
+    .catch(function(error) {
+        console.error(error);
+    });

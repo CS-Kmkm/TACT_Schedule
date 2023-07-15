@@ -7,24 +7,34 @@
 
   <body>
     <h1>学期設定</h1>
-    <h2>春１期もしくは秋１期の場合は１期、春２期もしくは秋２期の場合は２期を選択してSaveを押してください。</h2>
-    <h3>（デフォルトは１期です）</h3>
-    <!--
+    <h2>春1期もしくは秋1期の場合は1、春2期の場合は2、秋2期の場合は3を選択してSaveを押してください。</h2>
+    <h3>（デフォルトは春1期です）</h3>
+
     <form>
-      <input
-        type = "number"
-        step = "1"
-        min = "2020"
-        name = "year"
-      >
-      -->
+      <label>
+        年:
+        <input
+          type="number"
+          step="1"
+          min="2020"
+          name="year"
+          id="year-input"
+        >
+      </label>
+      <br>
+      <label>
+        <input type="radio" name="term" value="1" checked> 春1期
+      </label>
+      <label>
+        <input type="radio" name="term" value="2"> 春2期
+      </label>
+      <label>
+        <input type="radio" name="term" value="3"> 秋1期
+      </label>
+      <label>
+        <input type="radio" name="term" value="4"> 秋2期
+      </label>
     </form>
-    <label>
-      <input type="radio" name="term" value="1" checked> 1期
-    </label>
-    <label>
-      <input type="radio" name="term" value="2"> ２期
-    </label>
     <button id="save-button">Save</button>
     <script src="options.js"></script>
   </body>
