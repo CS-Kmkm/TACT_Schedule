@@ -133,10 +133,9 @@ function main(){
 
 getData()
     .then(function(data) {
-      alert(date.year);
-      year = data.year || (new Date().getFullYear());
-      term = data.term || 2;
-      main();
+        year = data.year || (new Date().getFullYear());
+        term = data.term || 1;
+        main();
     })
     .catch(function(error) {
         console.error(error);
