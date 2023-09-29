@@ -78,7 +78,7 @@ function gen_reg(){
             quarter = "２";
             break;
         case 1:
-            quarter = "１"
+            quarter = "１";
     }
     
     let str_reg = year.toString() + "年度" + season + "[" + quarter +"\/]";
@@ -96,13 +96,18 @@ function main(){
     
         let reg = new RegExp(str_reg);
         if (reg.test(title) == true){
-            class_setting(back, con, per_num);
-            per_num -= 4;
-            while (day_of_week.indexOf(title.substr(-4, 1)) == day_of_week.indexOf(title.substr((per_num - 1), 1))){
-                clone_class(back, con, per_num);
+            if (title.substr(0, 4) == "[遠隔]"){
+                back.style.order = 0;
+                projects += 1;
+            }else{
+                class_setting(back, con, per_num);
                 per_num -= 4;
+                while (day_of_week.indexOf(title.substr(-4, 1)) == day_of_week.indexOf(title.substr((per_num - 1), 1))){
+                    clone_class(back, con, per_num);
+                    per_num -= 4;
+                }
+                class_setting(back, con, -3);
             }
-            class_setting(back, con, -3);
             continue;
         }else{
             if (title.substr(-2, 1) == "限"){
