@@ -21,8 +21,8 @@ function hankaku_conversion(str){
 
 function class_setting(back, con, period){
     let title = con.title;
-    let class_day = day_of_week.indexOf(title.substr(-4, 1));
-    let class_period = hankaku_conversion(title.substr(period, 1));
+    let class_day = day_of_week.indexOf(title.substr(period, 1));
+    let class_period = hankaku_conversion(title.substr((period + 1), 1));
     let class_order = class_day + (class_period - 1)*5;
     back.style.order = class_order + 5;
     back.style.backgroundColor = color[class_day];
@@ -30,9 +30,9 @@ function class_setting(back, con, period){
 }
 
 function clone_class(back, con, i){
-    class_setting(back, con, i);
     let clone = back.cloneNode(true);
     target.appendChild(clone);
+    class_setting(back, con, i);
 }
 
 function generate_empty_class(title, order){
@@ -92,7 +92,7 @@ function main(){
         let back = background[i+2];
         let con = container[i];
         let title = con.title;
-        let per_num = -3;
+        let day_index = -4;
     
         let reg = new RegExp(str_reg);
         if (reg.test(title) == true){
@@ -100,11 +100,11 @@ function main(){
                 back.style.order = 0;
                 projects += 1;
             }else{
-                class_setting(back, con, per_num);
-                per_num -= 4;
-                while (day_of_week.indexOf(title.substr(-4, 1)) == day_of_week.indexOf(title.substr((per_num - 1), 1))){
-                    clone_class(back, con, per_num);
-                    per_num -= 4;
+                class_setting(back, con, day_index);
+                day_index -= 4;
+                while (day_of_week.includes(title.substr(day_index, 1))){ //(day_of_week.indexOf(title.substr(-4, 1)) == day_of_week.indexOf(title.substr((day_index - 1), 1))){
+                    clone_class(back, con, day_index);
+                    day_index -= 4;
                 }
                 class_setting(back, con, -3);
             }
