@@ -4,6 +4,7 @@ const color = ["#c6c6ff", "#ff9999", "#adffff", "#99ffcc", "#ffc993"];
 const background = document.querySelectorAll(".Mrphs-sitesNav__menuitem");
 const container = document.querySelectorAll(".link-container");
 const target = document.getElementById("topnav");
+let titles = Array.from(container).map(con => con.title);
 
 const date = new Date();
 let year = date.getFullYear();
@@ -13,14 +14,18 @@ let term, season, quarter;
 let projects = 0;
 let class_list = [];
 
+
+//特殊な講義に対する処理
+const exception_classes = {"画像処理（2023年度秋2期／火3，4限）":"画像処理(2023年度秋２期/火３限,火４限)"}
+titles = titles.map(title => exception_classes[title] || title); 
+
 function hankaku_conversion(str){
     return Number(str.replace(/[０-９]/g, function(s) {
         return String.fromCharCode(s.charCodeAt(0) - 65248);
     }));
 }
 
-function class_setting(back, con, period){
-    let title = con.title;
+function class_setting(back, title, period){
     let class_day = day_of_week.indexOf(title.substr(period, 1));
     let class_period = hankaku_conversion(title.substr((period + 1), 1));
     let class_order = class_day + (class_period - 1)*5;
@@ -29,10 +34,10 @@ function class_setting(back, con, period){
     class_list.push(class_order);
 }
 
-function clone_class(back, con, i){
+function clone_class(back, title, period){
     let clone = back.cloneNode(true);
     target.appendChild(clone);
-    class_setting(back, con, i);
+    class_setting(back, title, period);
 }
 
 function generate_empty_class(title, order){
@@ -90,23 +95,22 @@ function main(){
 
     for(let i = 0; i < container.length; i++){
         let back = background[i+2];
-        let con = container[i];
-        let title = con.title;
+        let title = titles[i];
         let day_index = -4;
     
         let reg = new RegExp(str_reg);
-        if (reg.test(title) == true){
+        if (reg.test(title)){
             if (title.substr(0, 4) == "[遠隔]"){
-                back.style.order = 0;
+                back.style.order = 1;
                 projects += 1;
-            }else{
-                class_setting(back, con, day_index);
+            }else{                //日n限, 日m限...形式に対応
+                class_setting(back, title, day_index);
                 day_index -= 4;
-                while (day_of_week.includes(title.substr(day_index, 1))){ //(day_of_week.indexOf(title.substr(-4, 1)) == day_of_week.indexOf(title.substr((day_index - 1), 1))){
-                    clone_class(back, con, day_index);
+                while (day_of_week.includes(title.substr(day_index, 1))){
+                    clone_class(back, title, day_index);
                     day_index -= 4;
                 }
-                class_setting(back, con, -3);
+                class_setting(back, title, -3);
             }
             continue;
         }else{
