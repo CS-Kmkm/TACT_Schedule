@@ -1,5 +1,5 @@
 # TACT_Schedule
-[TACT](https://tact.ac.thers.ac.jp/portal)を講義の時限順に並べて表示するChrome拡張機能になります。
+[TACT](https://tact.ac.thers.ac.jp/portal)を講義の時限順に並べて表示するChrome拡張機能です。
 ![image](https://github.com/user-attachments/assets/20000295-a75c-4a7f-80d9-3118cb944c71)
 
 
